@@ -18,42 +18,42 @@ NSString *const CPDebugLayerBBColor = @"bbColor";
 NSString *const CPDebugLayerCollisionPointColor = @"collisionPointColor";
 
 NSString *const CPDebugLayerLineWidth = @"lineWidth";
-NSString *const CPDebugLayerPointSize = @"collisionPointSize";
+NSString *const CPDebugLayerPointSize = @"pointSize";
 
-static void drawColorForPointer(void *ptr) {
-	unsigned long val = (long)ptr;
-	
-	// hash the pointer up nicely
-	val = (val+0x7ed55d16) + (val<<12);
-	val = (val^0xc761c23c) ^ (val>>19);
-	val = (val+0x165667b1) + (val<<5);
-	val = (val+0xd3a2646c) ^ (val<<9);
-	val = (val+0xfd7046c5) + (val<<3);
-	val = (val^0xb55a4f09) ^ (val>>16);
-    
-	GLubyte r = (val>>0) & 0xFF;
-	GLubyte g = (val>>8) & 0xFF;
-	GLubyte b = (val>>16) & 0xFF;
-	
-	GLubyte max = r>g ? (r>b ? r : b) : (g>b ? g : b);
-	
-	const int mult = 127;
-	const int add = 63;
-	r = (r*mult)/max + add;
-	g = (g*mult)/max + add;
-	b = (b*mult)/max + add;
-	
-	ccDrawColor4B(r, g, b, 255);
-}
+//static void drawColorForPointer(void *ptr) {
+//	unsigned long val = (long)ptr;
+//	
+//	// hash the pointer up nicely
+//	val = (val+0x7ed55d16) + (val<<12);
+//	val = (val^0xc761c23c) ^ (val>>19);
+//	val = (val+0x165667b1) + (val<<5);
+//	val = (val+0xd3a2646c) ^ (val<<9);
+//	val = (val+0xfd7046c5) + (val<<3);
+//	val = (val^0xb55a4f09) ^ (val>>16);
+//    
+//	GLubyte r = (val>>0) & 0xFF;
+//	GLubyte g = (val>>8) & 0xFF;
+//	GLubyte b = (val>>16) & 0xFF;
+//	
+//	GLubyte max = r>g ? (r>b ? r : b) : (g>b ? g : b);
+//	
+//	const int mult = 127;
+//	const int add = 63;
+//	r = (r*mult)/max + add;
+//	g = (g*mult)/max + add;
+//	b = (b*mult)/max + add;
+//	
+//	ccDrawColor4B(r, g, b, 255);
+//}
 
-void drawCircleShape(cpCircleShape *circle) {
+static void drawCircleShape(cpCircleShape *circle) {
     cpBody *body = ((cpShape *)circle)->body;
     
     // draw
     ccDrawCircle(circle->tc, circle->r, body->a, 32, YES);
 }
 
-void drawSegmentShape(cpSegmentShape *seg) {
+static void drawSegmentShape(cpSegmentShape *seg) {
     cpFloat radius = seg->r;
     
     if (radius > 0.0f) {
@@ -71,13 +71,13 @@ void drawSegmentShape(cpSegmentShape *seg) {
     
 }
 
-void drawPolyShape(cpPolyShape *poly) {
+static void drawPolyShape(cpPolyShape *poly) {
     // draw
     ccDrawPoly(poly->tVerts, poly->numVerts, YES);
     
 }
 
-void drawShape(cpShape *shape, void *data) {
+static void drawShape(cpShape *shape, void *data) {
     NSDictionary *options = data;
     
     // get drawing options
@@ -103,7 +103,7 @@ void drawShape(cpShape *shape, void *data) {
 	}
 }
 
-void drawConstraint(cpConstraint *constraint, void *data) {
+static void drawConstraint(cpConstraint *constraint, void *data) {
     NSDictionary *options = data;
     
     // get drawing options
@@ -164,7 +164,7 @@ void drawConstraint(cpConstraint *constraint, void *data) {
 	}
 }
 
-void drawBB(cpShape *shape, void *data) {
+static void drawBB(cpShape *shape, void *data) {
     NSDictionary *options = data;
     
     // get drawing options
@@ -187,7 +187,7 @@ void drawBB(cpShape *shape, void *data) {
     ccDrawPoly(verts, 4, YES);
 }
 
-void drawCollisionPoint(cpVect collisionPoint, void *data) {
+static void drawCollisionPoint(cpVect collisionPoint, void *data) {
     NSDictionary *options = data;
     
     // get drawing options
@@ -203,22 +203,22 @@ void drawCollisionPoint(cpVect collisionPoint, void *data) {
     
 }
 
-void drawShapes(cpSpace *space, NSDictionary *options) {
+static void drawShapes(cpSpace *space, NSDictionary *options) {
     // draw each shape
     cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)drawShape, options);
 }
 
-void drawConstraints(cpSpace *space, NSDictionary *options) {
+static void drawConstraints(cpSpace *space, NSDictionary *options) {
     // draw each constraint
     cpSpaceEachConstraint(space, (cpSpaceConstraintIteratorFunc)drawConstraint, options);
 }
 
-void drawBBs(cpSpace *space, NSDictionary *options) {
+static void drawBBs(cpSpace *space, NSDictionary *options) {
     // draw a bounding box for each shape
     cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)drawBB, options);
 }
 
-void drawCollisionPoints(cpSpace *space, NSDictionary *options) {
+static void drawCollisionPoints(cpSpace *space, NSDictionary *options) {
     // draw each collision point
     ccArray *arbiters = (ccArray *)space->CP_PRIVATE(arbiters);
     for (int i = 0; i < arbiters->num; i++){
