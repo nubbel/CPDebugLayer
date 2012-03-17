@@ -279,14 +279,14 @@ static void drawCollisionPoints(cpSpace *space, NSDictionary *options) {
 }
 
 - (ccColor4B)ccColor4B {
-    return ccc4(_r * 255.0f, 
-                _g * 255.0f, 
-                _b * 255.0f, 
-                _a * 255.0f);
+    return ccc4((GLubyte) (_r * 255.0f), 
+                (GLubyte) (_g * 255.0f), 
+                (GLubyte) (_b * 255.0f), 
+                (GLubyte) (_a * 255.0f));
 }
 
 - (ccColor4F)ccColor4F {
-    return (ccColor4F){_r, _g, _b, _a};
+    return (ccColor4F) {_r, _g, _b, _a};
 }
 
 - (NSString *)description {
