@@ -103,19 +103,67 @@ static void drawShape(cpShape *shape, void *data) {
 	}
 }
 
+static void drawSpringJoint(cpDampedSpring *spring, cpBody *bodyA, cpBody *bodyB) {
+    static const cpVect verts[] = {
+        { 0.00f,  0.0f },
+        { 0.20f,  0.0f },
+        { 0.25f,  3.0f },
+        { 0.30f, -6.0f },
+        { 0.35f,  6.0f },
+        { 0.40f, -6.0f },
+        { 0.45f,  6.0f },
+        { 0.50f, -6.0f },
+        { 0.55f,  6.0f },
+        { 0.60f, -6.0f },
+        { 0.65f,  6.0f },
+        { 0.70f, -3.0f },
+        { 0.75f,  6.0f },
+        { 0.80f,  0.0f },
+        { 1.00f,  0.0f }
+    };
+    
+    static const int numVerts = sizeof(verts) / sizeof(cpFloat) / 2;
+    
+    cpVect a = cpBodyLocal2World(bodyA, spring->anchr1);
+    cpVect b = cpBodyLocal2World(bodyB, spring->anchr2);
+
+    cpFloat len = cpvlength(cpvsub(b, a));
+    cpFloat angle = cpfatan2(b.y - a.y, b.x - a.x);
+    
+    kmGLMatrixMode(KM_GL_MODELVIEW);
+    
+    kmGLPushMatrix(); {
+        // TODO: use a single matrix
+        // scale, rotate and translate
+        kmGLTranslatef(a.x, a.y, 0.0f);
+        kmGLRotatef(CC_RADIANS_TO_DEGREES(angle), 0.0f, 0.0f, 1.0f);
+        kmGLScalef(len, 1.5f, 1.0f);
+        
+        // draw spring
+        ccDrawPoly(verts, numVerts, NO);
+        
+    } kmGLPopMatrix();
+    
+    // draw anchor points
+    ccDrawPoint(a);
+    ccDrawPoint(b);
+}
+
 static void drawConstraint(cpConstraint *constraint, void *data) {
     NSDictionary *options = data;
     
     // get drawing options
     ccColor4F color = ((CPDebugLayerColor *)[options objectForKey:CPDebugLayerConstraintColor]).ccColor4F;
+    cpFloat pointSize = [[options objectForKey:CPDebugLayerPointSize] floatValue];
     cpFloat lineWidth = [[options objectForKey:CPDebugLayerLineWidth] floatValue];
     
     // set drawing options
     ccDrawColor4f(color.r, color.g, color.b, color.a);
+    ccPointSize(pointSize);
     glLineWidth(lineWidth);
     
-    cpBody *body_a = constraint->a;
-	cpBody *body_b = constraint->b;
+    cpBody *bodyA = constraint->a;
+	cpBody *bodyB = constraint->b;
     
     
     
@@ -123,8 +171,8 @@ static void drawConstraint(cpConstraint *constraint, void *data) {
 	if (klass == cpPinJointGetClass()) {
 		cpPinJoint *joint = (cpPinJoint *)constraint;
         
-		cpVect a = cpvadd(body_a->p, cpvrotate(joint->anchr1, body_a->rot));
-		cpVect b = cpvadd(body_b->p, cpvrotate(joint->anchr2, body_b->rot));
+		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
+		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
         
 		ccDrawPoint(a);
 		ccDrawPoint(b);
@@ -133,8 +181,8 @@ static void drawConstraint(cpConstraint *constraint, void *data) {
 	} else if (klass == cpSlideJointGetClass()) {
 		cpSlideJoint *joint = (cpSlideJoint *)constraint;
         
-		cpVect a = cpvadd(body_a->p, cpvrotate(joint->anchr1, body_a->rot));
-		cpVect b = cpvadd(body_b->p, cpvrotate(joint->anchr2, body_b->rot));
+		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
+		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
         
 		ccDrawPoint(a);
 		ccDrawPoint(b);
@@ -143,22 +191,22 @@ static void drawConstraint(cpConstraint *constraint, void *data) {
 	} else if (klass == cpPivotJointGetClass()) {
 		cpPivotJoint *joint = (cpPivotJoint *)constraint;
         
-		cpVect a = cpvadd(body_a->p, cpvrotate(joint->anchr1, body_a->rot));
-		cpVect b = cpvadd(body_b->p, cpvrotate(joint->anchr2, body_b->rot));
+		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
+		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
         
 		ccDrawPoint(a);
 		ccDrawPoint(b);
 	} else if (klass == cpGrooveJointGetClass()) {
 		cpGrooveJoint *joint = (cpGrooveJoint *)constraint;
         
-		cpVect a = cpvadd(body_a->p, cpvrotate(joint->grv_a, body_a->rot));
-		cpVect b = cpvadd(body_a->p, cpvrotate(joint->grv_b, body_a->rot));
-		cpVect c = cpvadd(body_b->p, cpvrotate(joint->anchr2, body_b->rot));
+		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->grv_a, bodyA->rot));
+		cpVect b = cpvadd(bodyA->p, cpvrotate(joint->grv_b, bodyA->rot));
+		cpVect c = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
         
 		ccDrawPoint(c);
 		ccDrawLine(a, b);
 	} else if (klass == cpDampedSpringGetClass()){
-//		drawSpring((cpDampedSpring *)constraint, body_a, body_b);
+		drawSpringJoint((cpDampedSpring *)constraint, bodyA, bodyB);
 	} else {
         NSLog(@"Cannot draw constraint.");
 	}

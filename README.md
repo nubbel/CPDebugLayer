@@ -15,8 +15,8 @@ All kind of shapes are supported: circle, segment and poly shapes!
 
 ###Supported constraint/joint types:###
 
-- pin, slide, pivot and groove joint
-- damped springs is in the work and will be added shortly
+- pin, slide, pivot, groove and damped springs joints
+- gear joint is in the work and will be added shortly
 
 ##Usage##
 Using the CPDebugLayer is as simple as that:
