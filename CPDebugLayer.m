@@ -103,6 +103,21 @@ static void drawShape(cpShape *shape, void *data) {
 	}
 }
 
+static void drawSimpleJoint(cpBody *bodyA, cpBody *bodyB, cpVect anchr1, cpVect anchr2, BOOL drawLine) {
+    // anchor points in world coordinates
+    cpVect a = cpBodyLocal2World(bodyA, anchr1);
+    cpVect b = cpBodyLocal2World(bodyB, anchr2);
+    
+    // draw
+    ccDrawPoint(a);
+    ccDrawPoint(b);
+    
+    if (drawLine) {
+        ccDrawLine(a, b);
+    }
+    
+}
+
 static void drawSpringJoint(cpDampedSpring *spring, cpBody *bodyA, cpBody *bodyB) {
     static const cpVect verts[] = {
         { 0.00f,  0.0f },
@@ -168,41 +183,32 @@ static void drawConstraint(cpConstraint *constraint, void *data) {
     
     
 	const cpConstraintClass *klass = constraint->CP_PRIVATE(klass);
+
 	if (klass == cpPinJointGetClass()) {
 		cpPinJoint *joint = (cpPinJoint *)constraint;
         
-		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
-		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
-        
-		ccDrawPoint(a);
-		ccDrawPoint(b);
-		ccDrawLine(a, b);
+        // draw
+        drawSimpleJoint(bodyA, bodyB, joint->anchr1, joint->anchr2, YES);
 		
 	} else if (klass == cpSlideJointGetClass()) {
 		cpSlideJoint *joint = (cpSlideJoint *)constraint;
         
-		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
-		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
-        
-		ccDrawPoint(a);
-		ccDrawPoint(b);
-		ccDrawLine(a, b);
+        // draw
+        drawSimpleJoint(bodyA, bodyB, joint->anchr1, joint->anchr2, YES);
         
 	} else if (klass == cpPivotJointGetClass()) {
 		cpPivotJoint *joint = (cpPivotJoint *)constraint;
         
-		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->anchr1, bodyA->rot));
-		cpVect b = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
-        
-		ccDrawPoint(a);
-		ccDrawPoint(b);
+        // draw
+        drawSimpleJoint(bodyA, bodyB, joint->anchr1, joint->anchr2, NO);
 	} else if (klass == cpGrooveJointGetClass()) {
 		cpGrooveJoint *joint = (cpGrooveJoint *)constraint;
         
-		cpVect a = cpvadd(bodyA->p, cpvrotate(joint->grv_a, bodyA->rot));
-		cpVect b = cpvadd(bodyA->p, cpvrotate(joint->grv_b, bodyA->rot));
-		cpVect c = cpvadd(bodyB->p, cpvrotate(joint->anchr2, bodyB->rot));
+		cpVect a = cpBodyLocal2World(bodyA, joint->grv_a);
+		cpVect b = cpBodyLocal2World(bodyA, joint->grv_b);
+		cpVect c = cpBodyLocal2World(bodyB, joint->anchr2);
         
+        // draw
 		ccDrawPoint(c);
 		ccDrawLine(a, b);
 	} else if (klass == cpDampedSpringGetClass()){
