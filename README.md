@@ -27,6 +27,17 @@ Using the CPDebugLayer is as simple as that:
 
 It can be configured by passing a `NSDictionary` for the options parameter.
 
+
+##Screenshots##
+Standard configuration: Shapes, constraints and collision points enabled
+![shapes, constraints and collision points enabled](https://github.com/nubbel/CPDebugLayer/raw/master/Screenshots/Screenshot1.png)
+
+Bounding boxes enabled
+![shapes, constraints, collision points and bounding boxes enabled](https://github.com/nubbel/CPDebugLayer/raw/master/Screenshots/Screenshot2.png)
+
+Groove joint and slide joint
+![shapes, constraints and collision points enabled](https://github.com/nubbel/CPDebugLayer/raw/master/Screenshots/Screenshot3.png)
+
 ##Configuration options##
 
 | Option                          | Description                              | Default value |
