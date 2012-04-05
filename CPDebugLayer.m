@@ -85,7 +85,7 @@ static void drawShape(cpShape *shape, void *data) {
     cpFloat lineWidth = [[options objectForKey:CPDebugLayerLineWidth] floatValue];
     
     // set drawing options
-    ccDrawColor4f(color.r, color.g, color.b, color.a);
+    ccDrawColor4F(color.r, color.g, color.b, color.a);
     glLineWidth(lineWidth);
     
 	switch(shape->CP_PRIVATE(klass)->type){
@@ -173,7 +173,7 @@ static void drawConstraint(cpConstraint *constraint, void *data) {
     cpFloat lineWidth = [[options objectForKey:CPDebugLayerLineWidth] floatValue];
     
     // set drawing options
-    ccDrawColor4f(color.r, color.g, color.b, color.a);
+    ccDrawColor4F(color.r, color.g, color.b, color.a);
     ccPointSize(pointSize);
     glLineWidth(lineWidth);
     
@@ -226,7 +226,7 @@ static void drawBB(cpShape *shape, void *data) {
     cpFloat lineWidth = [[options objectForKey:CPDebugLayerLineWidth] floatValue];
     
     // set drawing options
-    ccDrawColor4f(color.r, color.g, color.b, color.a);
+    ccDrawColor4F(color.r, color.g, color.b, color.a);
     glLineWidth(lineWidth);
     
     cpBB bb = shape->bb;
@@ -249,7 +249,7 @@ static void drawCollisionPoint(cpVect collisionPoint, void *data) {
     cpFloat pointSize = [[options objectForKey:CPDebugLayerPointSize] floatValue];
     
     // set drawing options
-    ccDrawColor4f(color.r, color.g, color.b, color.a);
+    ccDrawColor4F(color.r, color.g, color.b, color.a);
     ccPointSize(pointSize);
     
     // draw
@@ -340,7 +340,7 @@ static void drawCollisionPoints(cpSpace *space, NSDictionary *options) {
 }
 
 - (ccColor4F)ccColor4F {
-    return (ccColor4F) {_r, _g, _b, _a};
+    return ccc4f(_r, _g, _b, _a);
 }
 
 - (NSString *)description {
