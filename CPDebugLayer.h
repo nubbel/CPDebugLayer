@@ -54,7 +54,7 @@ extern NSString *const CPDebugLayerPointSize;
 
 @property (nonatomic, copy, setter = addOptions:) NSDictionary *options;
 
-+ (id)cpDebugLayerForSpace:(cpSpace *)space options:(NSDictionary *)options;
++ (id)debugLayerForSpace:(cpSpace *)space options:(NSDictionary *)options;
 + (NSDictionary *)defaultOptions;
 
 - (id)initWithSpace:(cpSpace *)space options:(NSDictionary *)options;

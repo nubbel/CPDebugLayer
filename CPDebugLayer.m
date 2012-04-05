@@ -355,7 +355,7 @@ static void drawCollisionPoints(cpSpace *space, NSDictionary *options) {
 
 @synthesize options = _options;
 
-+ (id)cpDebugLayerForSpace:(cpSpace *)space options:(NSDictionary *)options {
++ (id)debugLayerForSpace:(cpSpace *)space options:(NSDictionary *)options {
     return [[[self alloc] initWithSpace:space options:options] autorelease];
 }
 
